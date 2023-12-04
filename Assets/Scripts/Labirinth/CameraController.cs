@@ -1,9 +1,12 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject cameraAnchor;
+
     private float camAngleX;
     private float camAngleY;
     private float rodAngleX;
@@ -25,18 +28,32 @@ public class CameraController : MonoBehaviour
         camAngleY += mx;
         rodAngleX -= my;
         rodAngleY += mx;
+
+        if(Input.GetKeyDown(KeyCode.V))
+        {
+            LabirinthState.cameraFirstPerson  = 
+                ! LabirinthState.cameraFirstPerson;
+        }
     }
     private void LateUpdate()
     {
         this.transform.eulerAngles = new Vector3(camAngleX, camAngleY, 0);
-        transform.position = Quaternion.Euler(rodAngleX, rodAngleY, 0) * camRod;
+        if (LabirinthState.cameraFirstPerson)
+        {
+            transform.position = cameraAnchor.transform.position;
+        }
+        else
+        {
+            transform.position = 
+                Quaternion.Euler(rodAngleX, rodAngleY, 0) * camRod;
+        }        
     }
 }
-/* Д.З. Обмежити діапазон управління камерою з міркувань:
- * - горизонт Світу не повинен потрапляти у її поле зору (мінімальний
- *    нахил камери близько 35)
- * - камера не переходить вертикальну точку (не перегортається)
- *    обмежити вертикальний кут 90.
- * - залишати поняття "направленості" погляду камери, тобто не
- *    дозволяти вертикальний кут рівно 90.
+/* Р”.Р—. РћР±РјРµР¶РёС‚Рё РґС–Р°РїР°Р·РѕРЅ СѓРїСЂР°РІР»С–РЅРЅСЏ РєР°РјРµСЂРѕСЋ Р· РјС–СЂРєСѓРІР°РЅСЊ:
+ * - РіРѕСЂРёР·РѕРЅС‚ РЎРІС–С‚Сѓ РЅРµ РїРѕРІРёРЅРµРЅ РїРѕС‚СЂР°РїР»СЏС‚Рё Сѓ С—С— РїРѕР»Рµ Р·РѕСЂСѓ (РјС–РЅС–РјР°Р»СЊРЅРёР№
+ *    РЅР°С…РёР» РєР°РјРµСЂРё Р±Р»РёР·СЊРєРѕ 35)
+ * - РєР°РјРµСЂР° РЅРµ РїРµСЂРµС…РѕРґРёС‚СЊ РІРµСЂС‚РёРєР°Р»СЊРЅСѓ С‚РѕС‡РєСѓ (РЅРµ РїРµСЂРµРіРѕСЂС‚Р°С”С‚СЊСЃСЏ)
+ *    РѕР±РјРµР¶РёС‚Рё РІРµСЂС‚РёРєР°Р»СЊРЅРёР№ РєСѓС‚ 90.
+ * - Р·Р°Р»РёС€Р°С‚Рё РїРѕРЅСЏС‚С‚СЏ "РЅР°РїСЂР°РІР»РµРЅРѕСЃС‚С–" РїРѕРіР»СЏРґСѓ РєР°РјРµСЂРё, С‚РѕР±С‚Рѕ РЅРµ
+ *    РґРѕР·РІРѕР»СЏС‚Рё РІРµСЂС‚РёРєР°Р»СЊРЅРёР№ РєСѓС‚ СЂС–РІРЅРѕ 90.
  */

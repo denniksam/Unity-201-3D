@@ -6,13 +6,18 @@ public class SphereScript : MonoBehaviour
 {
     [SerializeField]
     private GameObject _camera;
+    [SerializeField]
+    private GameObject cameraAnchor;
 
     private Rigidbody body;
     private float forceFactor = 500f;
+    private Vector3 anchorOffset;
 
     void Start()
     {
         body = GetComponent<Rigidbody>();
+        anchorOffset = this.transform.position - 
+            cameraAnchor.transform.position;
     }
 
     void Update()
@@ -29,6 +34,9 @@ public class SphereScript : MonoBehaviour
             kh * right + kv * forward;
 
         body.AddForce(forceFactor * Time.deltaTime * forceDirection);
+
+        cameraAnchor.transform.position = this.transform.position -
+            anchorOffset;
     }
 
     private void OnTriggerEnter(Collider other)
