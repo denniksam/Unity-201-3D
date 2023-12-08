@@ -22,6 +22,8 @@ public class CameraController : MonoBehaviour
     }
     void Update()
     {
+        if (LabirinthState.isPaused) return;
+
         float mx = Input.GetAxis("Mouse X");
         float my = Input.GetAxis("Mouse Y");
         camAngleX -= my;
@@ -37,6 +39,8 @@ public class CameraController : MonoBehaviour
     }
     private void LateUpdate()
     {
+        if (LabirinthState.isPaused) return;
+
         this.transform.eulerAngles = new Vector3(camAngleX, camAngleY, 0);
         if (LabirinthState.cameraFirstPerson)
         {

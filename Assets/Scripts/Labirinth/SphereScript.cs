@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class SphereScript : MonoBehaviour
 {
@@ -13,11 +14,24 @@ public class SphereScript : MonoBehaviour
     private float forceFactor = 500f;
     private Vector3 anchorOffset;
 
+    private AudioSource collectSound;
+    private AudioSource backgroundMusic;
+
     void Start()
     {
         body = GetComponent<Rigidbody>();
         anchorOffset = this.transform.position - 
             cameraAnchor.transform.position;
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        collectSound = audioSources[0];
+        backgroundMusic = audioSources[1];
+
+        if (!LabirinthState.isSoundsMuted)
+        {
+            // backgroundMusic.volume = LabirinthState.musicVolume;
+            backgroundMusic.Play();
+        }
+        LabirinthState.AddNotifyListener(OnLabirinthStateChanged);
     }
 
     void Update()
@@ -37,16 +51,41 @@ public class SphereScript : MonoBehaviour
 
         cameraAnchor.transform.position = this.transform.position -
             anchorOffset;
+
+        
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("SphereScript " + other.name);
+        // Debug.Log("SphereScript " + other.name);
+        if (other.gameObject.CompareTag("CheckPoint"))
+        {
+            if (!LabirinthState.isSoundsMuted)
+            {
+                collectSound.Play();
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        LabirinthState.RemoveNotifyListener(OnLabirinthStateChanged);
+    }
+
+    private void OnLabirinthStateChanged(string propertyName)
+    {
+        if(propertyName == nameof(LabirinthState.musicVolume))
+        {
+            Debug.Log("OnLabirinthStateChanged: " + propertyName);
+            // if(backgroundMusic.volume != LabirinthState.musicVolume)
+            // {
+            //     backgroundMusic.volume = LabirinthState.musicVolume;
+            // }
+        }
     }
 }
-/* Д.З. Орієнтація управління
- * Зробити корекцію алгоритма управління на 
- * випадок одночасного натиску горизонтального 
- * і вертикального сенсорів (сумарний вектор при
- * цьому довший, ніж кожен з сенсорних векторів)
+/* Д.З. Управління гучністю
+ * Реалізувати передачу даних від UI елементів
+ * до реальних налаштувань гучності звуків та музики
+ * ** Повторити патерн "Спостерігач" та ChangeNotifier
  */

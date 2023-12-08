@@ -16,6 +16,8 @@ public class SpotLightScript : MonoBehaviour
 
     void Update()
     {
+        if (LabirinthState.isPaused) return;
+
         if (LabirinthState.cameraFirstPerson && !LabirinthState.isDay)
         {
             this.transform.position = _camera.transform.position;
