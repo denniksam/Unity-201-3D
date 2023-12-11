@@ -7,7 +7,6 @@ public class Gates1Script : MonoBehaviour
 {
     private float swingPeriod = 3f;
 
-
     void Start()
     {
         

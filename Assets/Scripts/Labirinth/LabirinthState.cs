@@ -6,12 +6,18 @@ using UnityEngine;
 
 public class LabirinthState {
     private static List<Action<String>> observers = new();
-    private static Dictionary<String, List<Action>> propertyObservers = new()
+    private static Dictionary<String, List<Action>> propertyObservers = 
+        initPropertyObservers();
+    private static Dictionary<String, List<Action>> initPropertyObservers()
     {
-        {nameof(checkPoint1Amount), new() },
-        {nameof(musicVolume), new() },
-        // {"", new() },
-    };
+        Dictionary<String, List<Action>> res = new();
+        foreach(var prop in typeof(LabirinthState).GetProperties())
+        {
+            res[prop.Name] = new();
+        }
+        return res;
+    }
+
     public static void AddPropertyListener(String propertyName, Action listener)
     {
         if (propertyObservers.ContainsKey(propertyName))
@@ -87,6 +93,35 @@ public class LabirinthState {
 
     public static float effectsVolume;
     public static bool isSoundsMuted;
+
+    #region ckeckPoint2
+    private static float _checkPoint2Amount;
+    public static float checkPoint2Amount
+    {
+        get { return _checkPoint2Amount; }
+        set
+        {
+            if (_checkPoint2Amount != value)
+            {
+                _checkPoint2Amount = value;
+                NotifyListeners();
+            }
+        }
+    }
+    private static bool _checkPoint2Passed;
+    public static bool checkPoint2Passed
+    {
+        get { return _checkPoint2Passed; }
+        set
+        {
+            if (_checkPoint2Passed != value)
+            {
+                _checkPoint2Passed = value;
+                NotifyListeners();
+            }
+        }
+    }
+    #endregion
 }
 /* Д.З. Архітектура оповіщення
  * Створити властивість (Property) об'єкту-стану, яка

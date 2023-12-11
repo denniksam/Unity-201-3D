@@ -15,6 +15,11 @@ public class CameraScript : MonoBehaviour
     private Vector3 camSun;  // вектор Сонце -> Камера
     private Camera _camera;
 
+    private void Awake()
+    {
+        Debug.Log("Awake: " + LabirinthState.checkPoint1Amount);
+    }
+
     void Start()
     {
         camEulerX = this.transform.eulerAngles.x;
